@@ -3,23 +3,55 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+	<script src="moment.js"></script>
+	<link rel="stylesheet" type="text/css" href = "style.css"> 
   </head>
+
   <body>
+	<div class="update">0 new Tweets</div>
     <script>
 
       $(document).ready(function(){
         var $body = $('body');
-        $body.html('');
-
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
-
+		
+		var newTweets = 0;
+		
+		var newTweet = function(i){
+			var tweet = streams.home[i];
+			var $tweet = $('<div class="new tweet"></div>');
+			var timeCreated = tweet.created_at;
+			var time = moment(timeCreated).fromNow();
+			$tweet.addClass(tweet.user);
+			$tweet.append('<p id="message">' + tweet.message + '</p>');
+			$tweet.append('<h2><span class="name">' + '@' + tweet.user + ' </span><font size=3px>' + time + '</font></h2>');
+			
+			$('.update').after($tweet);
+		}
+		
+		var update = function(){
+			var first = 0;			
+			
+			while(newTweets < streams.home.length){
+				newTweet(newTweets);
+				newTweets++;
+			}
+			$('.tweet').removeClass('new');
+			
+		}
+		
+		$('.update').on('click',function(){
+			$('.tweet').show();
+			update();
+			$('.update').text('0 new Tweets');
+		});
+		
+		update();		
+		setInterval(function(){
+			var totalTweets = streams.home.length - newTweets;
+			$('.update').text( totalTweets + " new Tweets");
+		}, 2000);
+		
+		
       });
 
     </script>
