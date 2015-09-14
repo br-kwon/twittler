@@ -37,6 +37,11 @@
 				newTweets++;
 			}
 			$('.tweet').removeClass('new');
+
+			$('.name').on('click',function(){
+				var name = $(this).text().slice(1);
+				$('.tweet:not(.'+ name +')').hide();
+		});
 			
 		}
 		
@@ -51,6 +56,7 @@
 			var totalTweets = streams.home.length - newTweets;
 			$('.update').text( totalTweets + " new Tweets");
 		}, 2000);
+
 		
 		
       });
